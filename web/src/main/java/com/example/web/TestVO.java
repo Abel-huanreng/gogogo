@@ -1,6 +1,9 @@
 package com.example.web;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @author hejing
@@ -10,4 +13,6 @@ import lombok.Data;
 public class TestVO {
     private Long id;
     private String name;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+    private Date date;
 }
