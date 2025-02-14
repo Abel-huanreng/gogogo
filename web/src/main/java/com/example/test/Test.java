@@ -1,91 +1,66 @@
 package com.example.test;
 
-import com.example.system.domain.Config;
-import org.apache.commons.dbcp2.BasicDataSource;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author hejing
  * @date 2024/8/21:下午5:21
  */
 public class Test {
-    public static void main(String[] args) {
-        getConnection();
-        test();
+    public static void main(String[] args) throws SQLException {
+//        String sourceFilePath = "D:/tw/test.txt";
+//
+//        String outputFilePath = "D:/tw/test.txt.gz"; // 压缩文件路径
+//        try {
+//            compressFile(outputFilePath, sourceFilePath);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
 
+//        FileUtil.del("D:/tw/test.txt~/01");
+//        FileUtil.mkdir("D:/tw/test.txt~/01");
+//        FileUtil.touch("D:/tw/test.txt~/01/1.txt.ok");
+        // 获取今天的 0 点
+        //将字符串7F5E转为16进制
+        String str="7F5E";
+
+        //将字符串7F5E转为16进制
+        System.out.println(Integer.parseInt(str,16));
 
     }
 
-    private static void getConnection() {
-        //999999
-        // 数据库连接URL
 
 
-        try {
-            // 加载JDBC驱动程序（对于较新版本的JDBC和MySQL驱动，这一步可能不是必需的，但为了兼容性建议保留）
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            // 获取数据库连接
-            Connection connection = DriverManager.getConnection(Config.url, Config.username, Config.password);
-            if (connection != null) {
-                System.out.println("getConnection 成功连接到数据库");
-                // 在这里可以进行后续的数据库操作，例如执行SQL语句等
-                connection.close(); // 使用完连接后记得关闭
+    /**
+     * 压缩文件
+     *
+     * @param outputFilePath 压缩文件路径
+     * @param sourceFilePath 源文件路径
+     * @throws IOException 如果文件读写失败
+     */
+    private static void compressFile(String outputFilePath, String sourceFilePath) throws IOException {
+        // 使用 try-with-resources 自动关闭流
+        try (FileInputStream fis = new FileInputStream(sourceFilePath);
+             FileOutputStream fos = new FileOutputStream(outputFilePath);
+             GZIPOutputStream gzos = new GZIPOutputStream(fos)) {
+
+            byte[] buffer = new byte[1024]; // 缓冲区
+            int length;
+
+            // 读取源文件并写入 GZIP 输出流
+            while ((length = fis.read(buffer)) != -1) {
+                gzos.write(buffer, 0, length);
             }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
+            gzos.finish(); // 完成 GZIP 输出
         }
     }
 
-    private static void test() {
-        try {
-            BasicDataSource ds = new BasicDataSource();
 
-            ds.setUrl(Config.url);
 
-            ds.setUsername(Config.username);
-
-            ds.setPassword(Config.password);
-
-            ds.setInitialSize(10);
-
-            ds.setMaxTotal(1000);
-
-            ds.setMaxIdle(1000);
-
-            ds.setMinIdle(100);
-
-            ds.setMaxWaitMillis(1000);
-
-            ds.setRemoveAbandonedOnMaintenance(true);
-
-            ds.setRemoveAbandonedOnBorrow(true);
-
-            ds.setRemoveAbandonedTimeout(300);
-
-            ds.setMaxOpenPreparedStatements(1000);
-
-            for (int i = 0; i < 50; i++) {
-                try {
-                    Connection connection = ds.getConnection();
-                    if (connection != null) {
-                        System.out.println(" test 成功连接到数据库"+i);
-                        // 在这里可以进行后续的数据库操作，例如执行SQL语句等
-                        connection.close(); // 使用完连接后记得关闭
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println(i+"失败");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
 
 

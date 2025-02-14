@@ -1,13 +1,14 @@
 package com.example.swing;
 
-/**
- * @author hejing
- * @date 2024/5/13:12:53
- */
-public class TestSwing {
+import javafx.application.Application;
+import javafx.stage.Stage;
+
+public class TestSwing extends Application {
     public static void main(String[] args) {
+        launch(args);
+    }
 
-
-
+    @Override
+    public void start(Stage primaryStage) {
     }
 }
